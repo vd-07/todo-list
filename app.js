@@ -2,18 +2,24 @@
 
 const http = require('http');
 
+var url = require('url');
+
 const port = 8081;
 
 // todoList array
 
 let todoList = ["Complete Node Byte", "Play Cricket"];
 
-function getTodoList() {
+function getTodoList(left) {
     let htmlTodoList = '';
 
-    todoList.forEach((value) => {
+    for(let i = 0; i < todoList.length && left > 0; i++, left--) {
+        
+        let value = todoList[i];
+
         htmlTodoList += '<li>' + value + '</li>';
-    });
+
+    }
 
     // create an ordered list
 
@@ -40,15 +46,24 @@ function getTodoList() {
 //         body = JSON.parse(body);
 
 //     });
+//     return body;
 // }
 
 http.createServer((request, response) => {
 
     // check the request url and method
 
-    const { headers, method, url } = request;
+    const method = request.method;
 
-    if(url === '/todos') {
+    const requestUrl = request.url;
+
+    console.log(requestUrl);
+
+    // parse the url
+
+    let parsedUrl = url.parse(requestUrl, true);
+
+    if(parsedUrl.pathname === '/todos') {
 
         if(method == 'GET') {
             // Set response status code and response headers
@@ -57,7 +72,9 @@ http.createServer((request, response) => {
 
             // Set response body i.e, data to be sent
 
-            response.write(getTodoList());
+            let entryNumbers = parsedUrl.query.n;
+
+            response.write(getTodoList(entryNumbers ? entryNumbers : todoList.length));
 
         } else if(method == 'POST') {
 
@@ -114,11 +131,11 @@ http.createServer((request, response) => {
                     if(todoList[i] === todoDelete) {
     
                         todoList.splice(i, 1);
-    
+                        
                         break;
-                 
+
                     }
-    
+                    
                 }
 
                 // console.log(body);
