@@ -6,4 +6,6 @@ Currently non-persistant and accessible only through API
 - POST : Add a Todo item
 - DELETE : Remove a completed Todo item
 
+Query can be made using '?n=x', where x can be no of items to show
+
 The end-point is at '/todos'
