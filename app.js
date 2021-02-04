@@ -24,37 +24,117 @@ function getTodoList() {
     return '<h1>TODO</h1>' + htmlTodoList + '<p>Created by : Vivek Dubey</p>';
 }
 
+// function getBody(request) {
+//     let body = '';
+
+//     request.on('error', (err) => {
+
+//         console.error(err);
+
+//     }).on('data', (chunk) => {
+
+//         body += chunk;
+
+//     }).on('end', () => {
+
+//         body = JSON.parse(body);
+
+//     });
+// }
+
 http.createServer((request, response) => {
 
     // check the request url and method
 
     const { headers, method, url } = request;
 
-    if(url === '/todos' && method == 'GET') {
+    if(url === '/todos') {
 
-        // Set response status code and response headers
+        if(method == 'GET') {
+            // Set response status code and response headers
 
-        response.writeHead(200, { 'Content-Type': 'text/html' });
+            response.writeHead(200, { 'Content-Type': 'text/html' });
 
-        // Set response body i.e, data to be sent
+            // Set response body i.e, data to be sent
 
-        response.write(getTodoList());
+            response.write(getTodoList());
 
-    } else if(method != 'GET') {
+        } else if(method == 'POST') {
 
-        // when the method is not GET, url can be anything
+            response.writeHead(201);
 
-        response.writeHead(501, { 'Status-Code' : 'Not-Implemented' });
+            // add a new item
 
+            let body = '';
+
+            request.on('error', (err) => {
+
+                console.error(err);
+
+            }).on('data', (chunk) => {
+
+                body += chunk;
+
+            }).on('end', () => {
+
+                body = JSON.parse(body);
+
+                todoList.push(body.name);
+
+                // console.log(body);
+
+            });
+
+            console.log(body);
+
+        } else if(method == 'DELETE') {
+
+            response.writeHead(204);
+
+            // find and remove the item
+
+            let body = '';
+
+            request.on('error', (err) => {
+
+                console.error(err);
+
+            }).on('data', (chunk) => {
+
+                body += chunk;
+
+            }).on('end', () => {
+
+                body = JSON.parse(body);
+
+                let todoDelete = body.name;
+
+                for(let i in todoList) {    
+
+                    if(todoList[i] === todoDelete) {
+    
+                        todoList.splice(i, 1);
+    
+                        break;
+                 
+                    }
+    
+                }
+
+                // console.log(body);
+
+            });
+
+        } else {
+            
+            response.writeHead(501);
+
+        }
     } else {
 
-        // when url is wrong
-        // what if method is 'GET' - same
-        // what if method is not 'GET' - will execute "not implemented"
-        
-        response.writeHead(404, { 'Status-Code' : 'Not-Found' });
-    }
+        response.writeHead(404);
 
+    }            
 
     // Tell the server the response is complete and to close the connection
 
