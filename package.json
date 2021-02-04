@@ -1,7 +1,7 @@
 {
   "name": "nodejs-basics-byte",
   "version": "1.0.0",
-  "description": "Setup for Crio NodeJS Basics Byte",
+  "description": "Created as a task of Crio",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
